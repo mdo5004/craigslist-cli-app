@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'irb'
+
+puts "craigslist-cli-app console started."
+IRB.start
