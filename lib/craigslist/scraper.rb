@@ -2,7 +2,7 @@ require 'open-uri'
 require 'nokogiri'
 require 'pry'
 
-class Scraper
+class Craigslist::Scraper
    
     def self.scrape_search_results_page(search_page_url)
         
