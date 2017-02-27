@@ -24,5 +24,10 @@ class Craigslist::Listing
     end
     
     def self.find_or_create_by_title(title)
+        if self.find_by_title(title) == []
+            cl = Craigslist::Listing.new({title: title})
+            cl.save
+        end
+        cl
     end
 end
