@@ -4,6 +4,22 @@ require 'pry'
 
 class Craigslist::Scraper
 
+    def initialize
+        puts "What city are you in? (e.g. new york city, san francisco)"
+        city = STDIN.gets.strip
+
+        @url = ''
+        locations_page = Nokogiri::HTML(open("https://www.craigslist.org/about/sites"))
+        locations = locations_page.css("div.box a")
+        locations.each { |loc|
+            if city == loc.text
+                binding.pry
+
+                @url = loc.attribute("href").value
+            end
+            }
+    end
+
     def self.scrape_search_results_page(search_page_url)
         results_page = Nokogiri::HTML(open(search_page_url))
         results = results_page.css("li.result-row")
@@ -27,7 +43,7 @@ class Craigslist::Scraper
         title = results_page.css("span#titletextonly").text
         price = results_page.css("span.postingtitletext span.price").text
         neighborhood = results_page.css("span.postingtitletext small").text.strip
-        
+
         lat = results_page.css("div.viewposting").attribute("data-latitude").value
         lon = results_page.css("#map").attribute("data-longitude").value
         description_temp = results_page.css("section#postingbody").text.split(/\n/)
@@ -39,8 +55,8 @@ class Craigslist::Scraper
                 description << s 
             end
             }
-        
-        
+
+
         results = {title: title, price: price, neighborhood: neighborhood, latitude: lat, longitude: lon, description: description.strip!}
         results
     end
