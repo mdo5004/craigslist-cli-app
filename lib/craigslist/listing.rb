@@ -18,7 +18,9 @@ class Craigslist::Listing
     end
     
     def self.find_by_title(title)
-        
+        self.all.select { |listing|
+            listing.title == title
+            }
     end
     
     def self.find_or_create_by_title(title)
