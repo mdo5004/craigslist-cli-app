@@ -23,7 +23,26 @@ class Craigslist::Scraper
     end
 
     def self.scrape_craigslist_posting(posting_page_url)
-
+        results_page = Nokogiri::HTML(open(posting_page_url))
+        title = results_page.css("span#titletextonly").text
+        price = results_page.css("span.postingtitletext span.price").text
+        neighborhood = results_page.css("span.postingtitletext small").text.strip
+        
+        lat = results_page.css("div.viewposting").attribute("data-latitude").value
+        lon = results_page.css("#map").attribute("data-longitude").value
+        description_temp = results_page.css("section#postingbody").text.split(/\n/)
+        description = ''
+        description_temp.each { |s| 
+            s.strip!
+            if s.length > 1 && s != "QR Code Link to This Post"
+                s += ' '
+                description << s 
+            end
+            }
+        
+        
+        results = {title: title, price: price, neighborhood: neighborhood, latitude: lat, longitude: lon, description: description.strip!}
+        results
     end
 
 end
