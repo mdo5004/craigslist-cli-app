@@ -10,13 +10,14 @@ class Craigslist::Scraper
 
         results_hashes = Array.new
         results.each { |result| 
-            title = result.css("a.result-title").text
+            title = result.css("a.result-title").text.downcase
             price = result.css("span.result-price").text.scan(/(\$\d+)/).first
             if price.class == Array
                 price = price[0]
             end
-            neighborhood = result.css("span.result-hood").text
-            results_hashes << {title: title, price: price, neighborhood: neighborhood}
+            neighborhood = result.css("span.result-hood").text.strip
+            url = result.css("a.result-title").attribute("href").value
+            results_hashes << {title: title, price: price, neighborhood: neighborhood, url: url}
             }
         results_hashes
     end
