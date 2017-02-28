@@ -66,30 +66,54 @@ class Craigslist::Scraper
 
         if url == ''
             puts "Could not establish location..."
-            puts "Are you in the US? [y / n]"
+            puts "Are you in the US or Canada? [Y / N]"
             in_the_us = gets.strip.upcase
-            if in_the_us == "Y"
-                puts "What state are you in? (e.g. Alabama, New York)"
-                # establish location from state
-                state = gets.strip.downcase.capitalize
 
-                states = locations_page.css("div.box h4")
-                index = nil
-                states.each_with_index { |s, i|
-                    if s.text == state
-                        index = i
-                        binding.pry
-                    end
-                    }
-                
-                cities = locations_page.css("div.box h4 + ul")[index]
-                
+            if in_the_us == "Y"
+                puts "What state/province are you in? (e.g. New York, Ontario)"
+
             elsif in_the_us == "N"
+                puts "What country are you in? (e.g. France, Egypt)"
 
             else
                 establish_location(city)
 
             end
+
+            state = gets.strip.downcase.capitalize
+
+            states = locations_page.css("div.box h4")
+            index = nil
+            states.each_with_index { |s, i|
+                if s.text == state
+                    index = i
+
+                end
+                }
+
+            cities_array = locations_page.css("div.box h4 + ul")[index].text.split(/\n/)
+            cities = []
+            cities_array.each { |c|
+                c.strip!
+                if c != ''
+                    cities << c 
+                end
+                }
+            cities_array = locations_page.css("div.box h4 + ul")[index]
+            urls = cities_array.children.collect { |c| c.css("a")}.flatten
+            urls = urls.collect {|u| u.attribute("href").value}
+            binding.pry
+
+            if cities.length > 1
+                puts "Which is the closest city? (e.g. 1, 2, etc.)"
+                cities.each_with_index { |c, i|
+                    puts "#{i}. #{c}"
+                    }
+                index = gets.strip.to_i
+            else
+                index = 0
+            end
+            
         end
 
     end
