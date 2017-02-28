@@ -43,7 +43,9 @@ class Craigslist::Listing
             listing = find_or_create_by_pid(h[:pid])
 
             h.each { |k,v| 
+                if !listing.instance_variable_get("@#{k}")
                 listing.send("#{k}=",v)
+                end
                 }
         end
     end
@@ -52,6 +54,17 @@ class Craigslist::Listing
         self.all.clear
     end
 
+    def display_details
+        
+        puts "#{@title} - #{@price} #{@neighborhood}"
+        puts ""
+        puts "#{@description}"
+        puts ""
+        puts "Posted #{@age}"
+        
+        
+    end
+    
     def self.display_results
         input = ''
         index = 0
@@ -78,9 +91,10 @@ class Craigslist::Listing
         end
         input = input.to_i
         if input > 0 && input < self.all.length
-            return input
+            return self.all[input-1]
         else
             return false
         end
     end
+    
 end

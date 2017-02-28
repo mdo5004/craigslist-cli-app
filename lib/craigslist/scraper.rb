@@ -36,12 +36,17 @@ class Craigslist::Scraper
     end
 
     def self.scrape_craigslist_posting(posting_page_url)
-        results_page = Nokogiri::HTML(open(posting_page_url))
+        begin
+            results_page = Nokogiri::HTML(open(posting_page_url))
+        rescue
+            results_page = Nokogiri::HTML(open(@@base_url + posting_page_url))
+        end
         title = results_page.css("span#titletextonly").text
         price = results_page.css("span.postingtitletext span.price").text
         neighborhood = results_page.css("span.postingtitletext small").text.strip
         age = results_page.css("time.timeago").text
-        post_id = results_page.css("div.postinginfos + p").text
+        binding.pry
+        post_id = results_page.css("div.postinginfos").children[1].text.scan(/\d+/)[0]
         lat = results_page.css("div.viewposting").attribute("data-latitude").value
         lon = results_page.css("#map").attribute("data-longitude").value
         description_temp = results_page.css("section#postingbody").text.split(/\n/)
@@ -80,10 +85,10 @@ class Craigslist::Scraper
             query = gets.strip
         end
 
-        self.class.scrape_search_results_page("#{@base_url}search/sss?query=#{query}&sort=rel")
+        self.class.scrape_search_results_page("#{@@base_url}search/sss?query=#{query}&sort=rel")
         n_results = Craigslist::Listing.all.length
         puts "\n Found #{n_results} results. \n"
-        Craigslist::Listing.display_results
+        
     end
 
 
@@ -162,21 +167,21 @@ class Craigslist::Scraper
                 index = 0
             end
             begin
-                @current_location = cities[index]
-                @base_url = urls[index]
+                @@current_location = cities[index]
+                @@base_url = urls[index]
             rescue
                 puts "Invalid entry... Expecting integer."
                 puts ""
                 establish_location()
             end
         else
-            @current_location = city
-            @base_url = url
+            @@current_location = city
+            @@base_url = url
         end
         puts "Location found!"
         puts ""
-        puts "Location: #{@current_location}"
-        puts "Your Craigslist: #{@base_url}"
+        puts "Location: #{@@current_location}"
+        puts "Your Craigslist: #{@@base_url}"
         puts ""
         puts "Is that correct? [Y/N]"
         begin
@@ -194,10 +199,16 @@ class Craigslist::Scraper
     #--------------------------------------------------------------------------------#
     private
     def base_url
-        @base_url
+        @@base_url
     end
     def base_url=(url)
-        @base_url = url
+        @@base_url = url
+    end
+    def current_location
+        @@current_location
+    end
+    def current_location=(loc)
+        @@current_location = loc
     end
 
 
