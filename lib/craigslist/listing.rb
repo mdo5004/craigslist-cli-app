@@ -30,4 +30,8 @@ class Craigslist::Listing
         end
         cl
     end
+    
+    def self.clear_all
+        self.all = []
+    end
 end

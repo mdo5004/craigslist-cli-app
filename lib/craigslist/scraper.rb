@@ -70,6 +70,7 @@ class Craigslist::Scraper
     end
 
     def search
+        Listing.clear_all
         puts "What are you searching for? (e.g. cross country skis, honda accord)"
         begin
             query = STDIN.gets.strip
@@ -77,8 +78,8 @@ class Craigslist::Scraper
             query = gets.strip
         end
 
-        results = self.class.scrape_search_results_page("#{@base_url}search/sss?query=#{query}&sort=rel")
-        binding.pry
+        self.class.scrape_search_results_page("#{@base_url}search/sss?query=#{query}&sort=rel")
+        
     end
 
 
