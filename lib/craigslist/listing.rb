@@ -1,6 +1,6 @@
 class Craigslist::Listing
 
-    attr_accessor :title, :price, :neighborhood, :latitude, :longitude, :description, :url
+    attr_accessor :title, :price, :neighborhood, :latitude, :longitude, :description, :url, :age, :pid
 
     @@all = []
 
@@ -13,37 +13,35 @@ class Craigslist::Listing
     def self.all
         @@all
     end
-    
-    
+
+
     def save
         self.class.all << self
     end
 
-    def self.find_by_title(title)
+    def self.find_by_pid(pid)
         result = self.all.select { |listing|
-            listing.title == title
+            listing.pid == pid
             }
         result[0]
     end
 
-    def self.find_or_create_by_title(title)
-        if self.find_by_title(title) == nil
-            cl = Craigslist::Listing.new({title: title})
+    def self.find_or_create_by_pid(pid)
+        if self.find_by_pid(pid) == nil
+            cl = Craigslist::Listing.new({pid: pid})
             cl.save
-            else
-            cl = self.find_by_title(title)
+        else
+            cl = self.find_by_pid(pid)
         end
         cl
     end
 
     def self.find_or_create_by_hash(h)
-        if h[:title] == nil
-            puts "Listing must have, at least, a title."
+        if h[:pid] == nil
+            puts "Listing must have a pid."
         else
-            listing = find_or_create_by_title(h[:title])
-            if listing == nil
-            binding.pry
-            end
+            listing = find_or_create_by_pid(h[:pid])
+
             h.each { |k,v| 
                 listing.send("#{k}=",v)
                 }
@@ -53,8 +51,36 @@ class Craigslist::Listing
     def self.clear_all
         self.all.clear
     end
-    
-    def display_results
-        
+
+    def self.display_results
+        input = ''
+        index = 0
+        while input == ''
+            10.times do
+
+                item = self.all[index]
+                puts "#{index+1}. #{item.title} (#{item.price})"
+                index += 1
+                if index > self.all.length
+                    break
+                end
+            end
+            puts "----------------------------------------"
+            puts "Press ENTER to see the next 10 results"
+            puts "or enter item index to view specific result (e.g. 9)"
+            puts "or enter q to end search"
+            puts "----------------------------------------"            
+            begin 
+                input = STDIN.gets.strip
+            rescue
+                input = gets.strip
+            end
+        end
+        input = input.to_i
+        if input > 0 && input < self.all.length
+            return input
+        else
+            return false
+        end
     end
 end

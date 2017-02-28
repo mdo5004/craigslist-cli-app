@@ -19,9 +19,10 @@ class Craigslist::Scraper
     def self.scrape_search_results_page(search_page_url)
         results_page = Nokogiri::HTML(open(search_page_url))
         results = results_page.css("li.result-row")
+       
 
-
-        results.each { |result| 
+        results.each { |result|
+            post_id = result.attribute("data-pid").value
             title = result.css("a.result-title").text.downcase
             price = result.css("span.result-price").text.scan(/(\$\d+)/).first
             if price.class == Array
@@ -29,7 +30,7 @@ class Craigslist::Scraper
             end
             neighborhood = result.css("span.result-hood").text.strip
             url = result.css("a.result-title").attribute("href").value
-            listing = Craigslist::Listing.find_or_create_by_hash({title: title, price: price, neighborhood: neighborhood, url: url})
+            listing = Craigslist::Listing.find_or_create_by_hash({pid: post_id, title: title, price: price, neighborhood: neighborhood, url: url})
             }
 
     end
@@ -39,7 +40,8 @@ class Craigslist::Scraper
         title = results_page.css("span#titletextonly").text
         price = results_page.css("span.postingtitletext span.price").text
         neighborhood = results_page.css("span.postingtitletext small").text.strip
-
+        age = results_page.css("time.timeago").text
+        post_id = results_page.css("div.postinginfos + p").text
         lat = results_page.css("div.viewposting").attribute("data-latitude").value
         lon = results_page.css("#map").attribute("data-longitude").value
         description_temp = results_page.css("section#postingbody").text.split(/\n/)
@@ -53,8 +55,9 @@ class Craigslist::Scraper
             }
 
 
-        results = {title: title, price: price, neighborhood: neighborhood, latitude: lat, longitude: lon, description: description.strip!}
-        results
+         listing = Craigslist::Listing.find_or_create_by_hash({pid: post_id, title: title, price: price, neighborhood: neighborhood, latitude: lat, longitude: lon, description: description.strip!, age: age})
+        
+        
     end
 
     def change_location
@@ -78,6 +81,8 @@ class Craigslist::Scraper
         end
 
         self.class.scrape_search_results_page("#{@base_url}search/sss?query=#{query}&sort=rel")
+        n_results = Craigslist::Listing.all.length
+        puts "\n Found #{n_results} results. \n"
         Craigslist::Listing.display_results
     end
 
