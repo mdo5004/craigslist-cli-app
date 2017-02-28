@@ -5,7 +5,7 @@ class Craigslist::CLI
     def call
         start
     end
-    
+
     def start
         puts "Thanks for using the Craigslist CLI"
         puts ""
@@ -17,6 +17,7 @@ class Craigslist::CLI
         cls = Craigslist::Scraper.new
 
         while running
+            puts ""
             puts "-------------------------------"
             puts "Let's get searching!"
             puts ""
@@ -34,17 +35,36 @@ class Craigslist::CLI
             case user_input
             when "s"
                 cls.search
-                listing = Craigslist::Listing.display_results
-                if listing
-                    
-                    Craigslist::Scraper.scrape_craigslist_posting(listing.url)
-                    listing.display_details
-                end
+                user_input = "b"
+                while user_input == "b"
+                    listing = Craigslist::Listing.display_results
+                    if listing
+                        Craigslist::Scraper.scrape_craigslist_posting(listing.url)
+                        listing.display_details
+                    end
 
+                    puts ""
+                    puts "Enter o to Open in default browser"
+                    puts "              or                  "
+                    puts "enter b to go back, or enter s to search again, or e to exit."
+                    puts ""
+
+                    begin
+                        user_input = STDIN.gets.strip.downcase
+                    rescue
+                        user_input = gets.strip.downcase
+                    end
+
+
+                end
+                if user_input = "o" && listing
+                    listing.open_in_browser
+                    user_input = "s"
+                end
             when "cl"
                 cls.establish_location()
 
-            when "e"
+            when "e", "exit"
                 running = false
                 break
 
