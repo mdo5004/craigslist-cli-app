@@ -126,7 +126,6 @@ class Craigslist::Scraper
             cities_array = locations_page.css("div.box h4 + ul")[index]
             urls = cities_array.children.collect { |c| c.css("a")}.flatten
             urls = urls.collect {|u| u.attribute("href").value}
-            binding.pry
 
             if cities.length > 1
                 puts "Which is the closest city? (e.g. 1, 2, etc.)"
@@ -147,6 +146,10 @@ class Craigslist::Scraper
             @current_location = city
             @base_url = url
         end
+        puts "Location found!"
+        puts ""
+        puts "Location: #{@current_location}"
+        puts "Your Craigslist: #{@base_url}"
     end
 
     def base_url
