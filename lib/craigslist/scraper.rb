@@ -6,7 +6,11 @@ class Craigslist::Scraper
 
     def initialize
         puts "What city are you in? (e.g. new york city, san francisco)"
-        city = STDIN.gets.strip
+        begin
+            city = STDIN.gets.strip
+        rescue
+            city = gets.strip
+        end
         establish_location(city)
     end
 
@@ -67,7 +71,11 @@ class Craigslist::Scraper
         if url == ''
             puts "Could not establish location..."
             puts "Are you in the US or Canada? [Y / N]"
-            in_the_us = gets.strip.upcase
+            begin
+                in_the_us = STDIN.gets.strip.upcase
+            rescue
+                in_the_us = gets.strip.upcase
+            end
 
             if in_the_us == "Y"
                 puts "What state/province are you in? (e.g. New York, Ontario)"
@@ -109,18 +117,27 @@ class Craigslist::Scraper
                 cities.each_with_index { |c, i|
                     puts "#{i}. #{c}"
                     }
-                index = gets.strip.to_i
+                begin
+                    index = STDIN.gets.strip.to_i
+                rescue
+                    index = gets.strip.to_i
+                end
             else
                 index = 0
             end
-            
+
             @base_url = urls[index]
         end
     end
 
     def change_location
         puts "In what city do you want to search? (e.g. dallas, philadelphia)"
-        city = gets.strip
+        begin
+            city = STDIN.gets.strip
+        rescue
+            city = gets.strip
+        end
+        
         establish_location(city)
     end
 end
