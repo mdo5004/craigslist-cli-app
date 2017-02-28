@@ -75,15 +75,15 @@ class Craigslist::Scraper
         rescue
             query = gets.strip
         end
-        
-       results = self.class.scrape_search_results_page("#{@base_url}search/sss?query=#{query}&sort=rel")
+
+        results = self.class.scrape_search_results_page("#{@base_url}search/sss?query=#{query}&sort=rel")
         binding.pry
     end
 
 
     private
 
-    def establish_location(city = '')
+    def establish_location(city = 'afsdfaljfksjdlaflaskdfj')
         city.downcase!
         url = ''
         locations_page = Nokogiri::HTML(open("https://www.craigslist.org/about/sites"))
@@ -115,16 +115,16 @@ class Craigslist::Scraper
 
             end
 
-            state = gets.strip.downcase.capitalize
+            state = gets.strip.downcase.split(' ').collect {|s| s.capitalize}.join(" ")
 
             states = locations_page.css("div.box h4")
             index = nil
             states.each_with_index { |s, i|
                 if s.text == state
                     index = i
-
                 end
                 }
+
 
             cities_array = locations_page.css("div.box h4 + ul")[index].text.split(/\n/)
             cities = []
@@ -148,11 +148,21 @@ class Craigslist::Scraper
                 rescue
                     index = gets.strip.to_i
                 end
+
+                if index >= cities.length
+                    index = cities.length - 1
+                end
             else
                 index = 0
             end
-            @current_location = cities[index]
-            @base_url = urls[index]
+            begin
+                @current_location = cities[index]
+                @base_url = urls[index]
+            rescue
+                puts "Invalid entry... Expecting integer."
+                puts ""
+                establish_location()
+            end
         else
             @current_location = city
             @base_url = url
@@ -171,7 +181,7 @@ class Craigslist::Scraper
         if done == "N" 
             establish_location()
         end
-            
+
     end
 
     def base_url
