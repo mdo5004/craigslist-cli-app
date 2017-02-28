@@ -50,7 +50,7 @@ class Craigslist::Scraper
         price = results_page.css("span.postingtitletext span.price").text
         neighborhood = results_page.css("span.postingtitletext small").text.strip
         age = results_page.css("time.timeago").text
-        binding.pry
+        #binding.pry
         post_id = results_page.css("div.postinginfos").children[1].text.scan(/\d+/)[0]
         lat = results_page.css("div.viewposting").attribute("data-latitude").value
         lon = results_page.css("#map").attribute("data-longitude").value
@@ -183,12 +183,14 @@ class Craigslist::Scraper
             @@current_location = city
             @@base_url = url
         end
+        puts ""
         puts "Location found!"
         puts ""
         puts "Location: #{@@current_location}"
         puts "Your Craigslist: #{@@base_url}"
         puts ""
         puts "Is that correct? [Y/N]"
+        puts ""
         begin
             done = STDIN.gets.strip.upcase
         rescue
@@ -202,11 +204,11 @@ class Craigslist::Scraper
     
     
     #--------------------------------------------------------------------------------#
-    private
-    def base_url
+    
+    def self.base_url
         @@base_url
     end
-    def base_url=(url)
+    def self.base_url=(url)
         @@base_url = url
     end
     def current_location
