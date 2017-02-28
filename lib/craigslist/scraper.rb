@@ -23,6 +23,11 @@ class Craigslist::Scraper
 
         results.each { |result|
             post_id = result.attribute("data-pid").value
+            begin
+                repost_id = result.attribute("data-repost-of").value
+            rescue
+                repost_id = nil
+            end
             title = result.css("a.result-title").text.downcase
             price = result.css("span.result-price").text.scan(/(\$\d+)/).first
             if price.class == Array
@@ -30,7 +35,7 @@ class Craigslist::Scraper
             end
             neighborhood = result.css("span.result-hood").text.strip
             url = result.css("a.result-title").attribute("href").value
-            listing = Craigslist::Listing.find_or_create_by_hash({pid: post_id, title: title, price: price, neighborhood: neighborhood, url: url})
+            listing = Craigslist::Listing.find_or_create_by_hash({pid: post_id, repost_of: repost_id, title: title, price: price, neighborhood: neighborhood, url: url})
             }
 
     end
