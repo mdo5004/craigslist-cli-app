@@ -20,7 +20,7 @@ class Craigslist::Scraper
         results_page = Nokogiri::HTML(open(search_page_url))
         results = results_page.css("li.result-row")
 
-        
+
         results.each { |result| 
             title = result.css("a.result-title").text.downcase
             price = result.css("span.result-price").text.scan(/(\$\d+)/).first
@@ -31,7 +31,7 @@ class Craigslist::Scraper
             url = result.css("a.result-title").attribute("href").value
             listing = Craigslist::Listing.find_or_create_by_hash({title: title, price: price, neighborhood: neighborhood, url: url})
             }
-        
+
     end
 
     def self.scrape_craigslist_posting(posting_page_url)
@@ -82,7 +82,7 @@ class Craigslist::Scraper
     end
 
 
-    private
+
 
     def establish_location(city = 'afsdfaljfksjdlaflaskdfj')
         city.downcase!
@@ -184,7 +184,10 @@ class Craigslist::Scraper
         end
 
     end
-
+    
+    
+    #--------------------------------------------------------------------------------#
+    private
     def base_url
         @base_url
     end
