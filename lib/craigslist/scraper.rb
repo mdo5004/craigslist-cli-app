@@ -155,9 +155,7 @@ class Craigslist::Scraper
     def base_url=(url)
         @base_url = url
     end
-    #    def current_location= (loc)
-    #        @current_location = loc
-    #    end
+
 
 
 end
