@@ -29,8 +29,7 @@ class Craigslist::Scraper
             end
             neighborhood = result.css("span.result-hood").text.strip
             url = result.css("a.result-title").attribute("href").value
-            listing = Listing.new({title: title, price: price, neighborhood: neighborhood, url: url})
-            listing.save
+            listing = Craigslist::Listing.find_or_create_by_hash({title: title, price: price, neighborhood: neighborhood, url: url})
             }
         
     end
@@ -70,7 +69,7 @@ class Craigslist::Scraper
     end
 
     def search
-        Listing.clear_all
+        Craigslist::Listing.clear_all
         puts "What are you searching for? (e.g. cross country skis, honda accord)"
         begin
             query = STDIN.gets.strip
@@ -79,7 +78,7 @@ class Craigslist::Scraper
         end
 
         self.class.scrape_search_results_page("#{@base_url}search/sss?query=#{query}&sort=rel")
-        
+        Craigslist::Listing.display_results
     end
 
 
