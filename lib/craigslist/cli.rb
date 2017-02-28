@@ -37,6 +37,7 @@ class Craigslist::CLI
                 cls.search
                 user_input = "b"
                 while user_input == "b"
+                    user_input = 's'
                     listing = Craigslist::Listing.display_results
                     if listing
                         Craigslist::Scraper.scrape_craigslist_posting(listing.url)
@@ -44,9 +45,7 @@ class Craigslist::CLI
                     end
 
                     puts ""
-                    puts "Enter o to Open in default browser"
-                    puts "              or                  "
-                    puts "enter b to go back, or enter s to search again, or e to exit."
+                    puts "Enter o to Open in default browser or enter b to go back"
                     puts ""
 
                     begin
@@ -57,7 +56,8 @@ class Craigslist::CLI
 
 
                 end
-                if user_input = "o" && listing
+                
+                if user_input == "o" && listing
                     listing.open_in_browser
                     user_input = "s"
                 end
