@@ -80,6 +80,7 @@ class Craigslist::Scraper
         locations = locations_page.css("div.box a")
         locations.each { |loc|
             if loc.text.include?(city)
+                city = loc.text
                 url = loc.attribute("href").value
             end
             }
