@@ -51,9 +51,9 @@ class Craigslist::Scraper
         results = {title: title, price: price, neighborhood: neighborhood, latitude: lat, longitude: lon, description: description.strip!}
         results
     end
-    
+
     private
-    
+
     def establish_location(city)
         url = ''
         locations_page = Nokogiri::HTML(open("https://www.craigslist.org/about/sites"))
@@ -63,16 +63,35 @@ class Craigslist::Scraper
                 url = loc.attribute("href").value
             end
             }
-        
+
         if url == ''
             puts "Could not establish location..."
-            puts "What state are you in? (e.g. Alabama, New York)"
-            # establish location from state
-            state = gets.strip
-            locations = locations_page.css("div.box h4 + ul")
-            
+            puts "Are you in the US? [y / n]"
+            in_the_us = gets.strip.upcase
+            if in_the_us == "Y"
+                puts "What state are you in? (e.g. Alabama, New York)"
+                # establish location from state
+                state = gets.strip.downcase.capitalize
+
+                states = locations_page.css("div.box h4")
+                index = nil
+                states.each_with_index { |s, i|
+                    if s.text == state
+                        index = i
+                        binding.pry
+                    end
+                    }
+                
+                cities = locations_page.css("div.box h4 + ul")[index]
+                
+            elsif in_the_us == "N"
+
+            else
+                establish_location(city)
+
+            end
         end
-        
+
     end
 
 end
