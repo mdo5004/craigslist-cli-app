@@ -8,7 +8,6 @@ class Craigslist::Scraper
         puts "What city are you in? (e.g. new york city, san francisco)"
         city = STDIN.gets.strip
         establish_location(city)
-
     end
 
     def self.scrape_search_results_page(search_page_url)
@@ -114,7 +113,10 @@ class Craigslist::Scraper
                 index = 0
             end
             
+            urls[index]
         end
+        
+        
 
     end
 
