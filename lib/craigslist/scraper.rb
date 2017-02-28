@@ -4,6 +4,8 @@ require 'pry'
 
 class Craigslist::Scraper
 
+    attr_reader :current_location
+
     def initialize
         puts "What city are you in? (e.g. new york city, san francisco)"
         begin
@@ -62,13 +64,13 @@ class Craigslist::Scraper
         rescue
             city = gets.strip
         end
-        
+
         establish_location(city)
     end
-    
-    
-    
-    
+
+
+
+
     private
 
     def establish_location(city)
@@ -139,8 +141,11 @@ class Craigslist::Scraper
             else
                 index = 0
             end
-
+            @current_location = cities[index]
             @base_url = urls[index]
+        else
+            @current_location = city
+            @base_url = url
         end
     end
 
@@ -150,6 +155,9 @@ class Craigslist::Scraper
     def base_url=(url)
         @base_url = url
     end
-    
-    
+    #    def current_location= (loc)
+    #        @current_location = loc
+    #    end
+
+
 end
