@@ -1,3 +1,5 @@
+require 'launchy'
+
 class Craigslist::Listing
 
     attr_accessor :title, :price, :neighborhood, :latitude, :longitude, :description, :url, :age, :pid, :repost_of
@@ -14,21 +16,21 @@ class Craigslist::Listing
         @@all
     end
 
-#    def self.remove_reposts
-#        repeats = []
-#        self.all.each_with_index {|item, i|
-#            if self.all.any? { |other_item|
-#                item.pid == other_item.repost_of 
-#                }
-#
-#                repeats << i
-#            end
-#            }
-#        binding.pry
-#
-#        repeats.reverse.each {|i| self.all.delete_at(i) }
-#        return nil
-#    end
+    #    def self.remove_reposts
+    #        repeats = []
+    #        self.all.each_with_index {|item, i|
+    #            if self.all.any? { |other_item|
+    #                item.pid == other_item.repost_of 
+    #                }
+    #
+    #                repeats << i
+    #            end
+    #            }
+    #        binding.pry
+    #
+    #        repeats.reverse.each {|i| self.all.delete_at(i) }
+    #        return nil
+    #    end
 
     def save
         self.class.all << self
@@ -71,15 +73,21 @@ class Craigslist::Listing
 
     def display_details
 
+        puts ""
+        puts "============================================================"
         puts "#{@title} - #{@price} #{@neighborhood}"
         puts ""
         puts "#{@description}"
         puts ""
         puts "Posted #{@age}"
-
-
+        puts "============================================================"
+        puts ""
+        
     end
 
+    def open_in_browser
+        Launchy.open("#{Craigslist::Scraper.base_url}#{@url}")
+    end
     def self.display_results
         input = ''
         index = 0

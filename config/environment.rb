@@ -3,6 +3,7 @@ require 'bundler'
 Bundler.require
 
 require 'pry'
+require 'launchy'
 
 require_relative "../lib/craigslist.rb"
 require_relative "../lib/craigslist/scraper.rb"
