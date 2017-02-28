@@ -53,4 +53,8 @@ class Craigslist::Listing
     def self.clear_all
         self.all.clear
     end
+    
+    def display_results
+        
+    end
 end
