@@ -5,6 +5,8 @@ require_relative "../config/environment.rb"
 puts "Thanks for using the Craigslist CLI"
 puts ""
 
-Craigslist::Scraper.new
+cls = Craigslist::Scraper.new
 
-
+puts "Let's get searching!"
+puts ""
+cls.search

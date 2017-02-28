@@ -68,12 +68,22 @@ class Craigslist::Scraper
         establish_location(city)
     end
 
-
+    def search
+        puts "What are you searching for? (e.g. cross country skis, honda accord)"
+        begin
+            query = STDIN.gets.strip
+        rescue
+            query = gets.strip
+        end
+        
+       results = self.class.scrape_search_results_page("#{@base_url}search/sss?query=#{query}&sort=rel")
+        binding.pry
+    end
 
 
     private
 
-    def establish_location(city)
+    def establish_location(city = '')
         city.downcase!
         url = ''
         locations_page = Nokogiri::HTML(open("https://www.craigslist.org/about/sites"))
@@ -151,6 +161,17 @@ class Craigslist::Scraper
         puts ""
         puts "Location: #{@current_location}"
         puts "Your Craigslist: #{@base_url}"
+        puts ""
+        puts "Is that correct? [Y/N]"
+        begin
+            done = STDIN.gets.strip.upcase
+        rescue
+            done = gets.strip.upcase
+        end
+        if done == "N" 
+            establish_location()
+        end
+            
     end
 
     def base_url
