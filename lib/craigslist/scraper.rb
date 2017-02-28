@@ -54,6 +54,7 @@ class Craigslist::Scraper
     private
 
     def establish_location(city)
+        city.downcase!
         url = ''
         locations_page = Nokogiri::HTML(open("https://www.craigslist.org/about/sites"))
         locations = locations_page.css("div.box a")
@@ -113,11 +114,13 @@ class Craigslist::Scraper
                 index = 0
             end
             
-            urls[index]
+            @base_url = urls[index]
         end
-        
-        
-
     end
 
+    def change_location
+        puts "In what city do you want to search? (e.g. dallas, philadelphia)"
+        city = gets.strip
+        establish_location(city)
+    end
 end
