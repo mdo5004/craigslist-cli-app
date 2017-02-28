@@ -55,6 +55,20 @@ class Craigslist::Scraper
         results
     end
 
+    def change_location
+        puts "In what city do you want to search? (e.g. dallas, philadelphia)"
+        begin
+            city = STDIN.gets.strip
+        rescue
+            city = gets.strip
+        end
+        
+        establish_location(city)
+    end
+    
+    
+    
+    
     private
 
     def establish_location(city)
@@ -130,14 +144,12 @@ class Craigslist::Scraper
         end
     end
 
-    def change_location
-        puts "In what city do you want to search? (e.g. dallas, philadelphia)"
-        begin
-            city = STDIN.gets.strip
-        rescue
-            city = gets.strip
-        end
-        
-        establish_location(city)
+    def base_url
+        @base_url
     end
+    def base_url=(url)
+        @base_url = url
+    end
+    
+    
 end
