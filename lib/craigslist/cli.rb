@@ -41,7 +41,7 @@ class Craigslist::CLI
                     listing = display_results
                     if listing
                         Craigslist::Scraper.scrape_craigslist_posting(listing.url)
-                        listing.display_details
+                        display_details(listing)
                     end
 
                     puts ""
@@ -106,5 +106,19 @@ class Craigslist::CLI
         else
             return false
         end
+    end
+    
+    def display_details(listing)
+
+        puts ""
+        puts "============================================================"
+        puts "#{listing.title} - #{listing.price} #{listing.neighborhood}"
+        puts ""
+        puts "#{listing.description}"
+        puts ""
+        puts "Posted #{listing.age}"
+        puts "============================================================"
+        puts ""
+        
     end
 end
