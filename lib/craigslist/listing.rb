@@ -71,20 +71,6 @@ class Craigslist::Listing
         self.all.clear
     end
 
-    def display_details
-
-        puts ""
-        puts "============================================================"
-        puts "#{@title} - #{@price} #{@neighborhood}"
-        puts ""
-        puts "#{@description}"
-        puts ""
-        puts "Posted #{@age}"
-        puts "============================================================"
-        puts ""
-        
-    end
-
     def open_in_browser
         Launchy.open("#{Craigslist::Scraper.base_url}#{@url}")
     end
