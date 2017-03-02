@@ -42,17 +42,19 @@ class Craigslist::CLI
                     if listing
                         Craigslist::Scraper.scrape_craigslist_posting(listing.url)
                         display_details(listing)
+                        
+                        puts ""
+                        puts "Enter o to Open in default browser or enter b to go back"
+                        puts ""
+
+                        begin
+                            user_input = STDIN.gets.strip.downcase
+                        rescue
+                            user_input = gets.strip.downcase
+                        end
                     end
 
-                    puts ""
-                    puts "Enter o to Open in default browser or enter b to go back"
-                    puts ""
-
-                    begin
-                        user_input = STDIN.gets.strip.downcase
-                    rescue
-                        user_input = gets.strip.downcase
-                    end
+                    
 
 
                 end
