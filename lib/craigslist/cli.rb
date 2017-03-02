@@ -38,7 +38,7 @@ class Craigslist::CLI
                 user_input = "b"
                 while user_input == "b"
                     user_input = 's'
-                    listing = Craigslist::Listing.display_results
+                    listing = display_results
                     if listing
                         Craigslist::Scraper.scrape_craigslist_posting(listing.url)
                         listing.display_details
@@ -73,6 +73,38 @@ class Craigslist::CLI
                 puts ""
 
             end
+        end
+    end
+    
+    def display_results
+        input = ''
+        index = 0
+        while input == ''
+            10.times do
+
+                item = Craigslist::Listing.all[index]
+                puts "#{index+1}. #{item.title} (#{item.price})"
+                index += 1
+                if index > Craigslist::Listing.all.length
+                    break
+                end
+            end
+            puts "----------------------------------------"
+            puts "Press ENTER to see the next 10 results"
+            puts "or enter item index to view specific result (e.g. 9)"
+            puts "or enter q to end search"
+            puts "----------------------------------------"            
+            begin 
+                input = STDIN.gets.strip
+            rescue
+                input = gets.strip
+            end
+        end
+        input = input.to_i
+        if input > 0 && input < Craigslist::Listing.all.length
+            return Craigslist::Listing.all[input-1]
+        else
+            return false
         end
     end
 end

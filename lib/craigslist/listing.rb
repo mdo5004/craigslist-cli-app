@@ -88,36 +88,6 @@ class Craigslist::Listing
     def open_in_browser
         Launchy.open("#{Craigslist::Scraper.base_url}#{@url}")
     end
-    def self.display_results
-        input = ''
-        index = 0
-        while input == ''
-            10.times do
 
-                item = self.all[index]
-                puts "#{index+1}. #{item.title} (#{item.price})"
-                index += 1
-                if index > self.all.length
-                    break
-                end
-            end
-            puts "----------------------------------------"
-            puts "Press ENTER to see the next 10 results"
-            puts "or enter item index to view specific result (e.g. 9)"
-            puts "or enter q to end search"
-            puts "----------------------------------------"            
-            begin 
-                input = STDIN.gets.strip
-            rescue
-                input = gets.strip
-            end
-        end
-        input = input.to_i
-        if input > 0 && input < self.all.length
-            return self.all[input-1]
-        else
-            return false
-        end
-    end
 
 end
